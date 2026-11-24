@@ -1,0 +1,65 @@
+---
+// "How it works" as numbered cards. The middle step is usually the heart of
+// the system, so it alone gets the accent.
+interface Props {
+  steps: { title: string; text: string }[];
+}
+
+const { steps } = Astro.props;
+const focus = Math.floor(steps.length / 2);
+---
+
+<ol class="steps">
+  {
+    steps.map((s, i) => (
+      <li class={i === focus ? 'on' : undefined}>
+        <span class="n">{String(i + 1).padStart(2, '0')}</span>
+        <h3>{s.title}</h3>
+        <p>{s.text}</p>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+  }
+
+  li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-tile);
+    padding: 22px;
+  }
+
+  li.on {
+    border-color: var(--accent-soft);
+  }
+
+  .n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--label);
+  }
+
+  li.on .n {
+    color: var(--accent);
+  }
+
+  h3 {
+    font-size: 19px;
+    margin-top: 10px;
+  }
+
+  p {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--secondary);
+    margin-top: 6px;
+  }
+</style>

@@ -1,0 +1,228 @@
+---
+import Base from '../layouts/Base.astro';
+import SayHi from '../components/SayHi.astro';
+import { site } from '../data/site';
+
+// Principles are paraphrased from Arjun's own design docs (listed in docs/review-checklist.md).
+const principles = [
+  {
+    title: 'Code does what code can',
+    text: 'Searching, numbering, coverage checks and validation are code. Models write and judge. Every guarantee a system makes should live somewhere a test can reach.',
+  },
+  {
+    title: 'Ground before you generate',
+    text: 'A source of truth (a knowledge graph, a schema, a verified document) decides scope. The model works inside it, never around it.',
+  },
+  {
+    title: 'No silent fallbacks',
+    text: 'When something fails, the job fails with a readable reason. A quietly worse answer is harder to catch than an error.',
+  },
+  {
+    title: 'Make long jobs boring',
+    text: 'Atomic claims, crash recovery, honest status and final states mean minutes-long AI work behaves like any other dependable system.',
+  },
+  {
+    title: 'Make the invisible visible',
+    text: 'Log the retries, trace the repairs, count the tokens. You can only improve what you can see.',
+  },
+];
+
+const timeline = [
+  {
+    when: 'Dec 2025 — now',
+    where: 'Orfiq',
+    what: 'AI engineer. I design and build the platform’s LLM systems: grounded generation pipelines, document parsing and repair, multimodal services and the reliability layer around them.',
+  },
+  { when: '2021 — 2025', where: 'Siddaganga Institute of Technology', what: 'Computer Science and Engineering.' },
+];
+---
+
+<Base
+  title="About"
+  description="About Arjun Nagendra: an AI engineer who designs and builds production LLM systems — grounded generation, reliable long-running jobs and validation layers."
+  path="/about/"
+>
+  <header class="wrap head">
+    <p class="kicker"><b>//</b> about</p>
+    <h1>About</h1>
+    <p class="lead">
+      I'm {site.name}, an {site.role} in {site.location}. I build the parts of AI products that have to be right:
+      LLM pipelines grounded in real data, jobs that keep working when things fail, and checks that catch what models get
+      wrong.
+    </p>
+  </header>
+
+  <div class="wrap prose">
+    <p>
+      Most of my work is at {site.org}, where I design and build the platform's AI systems for medical education. That
+      code is private, so this site is where I keep a record of it: what each system was for, the decisions behind it,
+      and how it works. The <a href="/work/">work</a> page has all of it, and the <a href="/now/">now</a> page says what
+      I'm on at the moment.
+    </p>
+  </div>
+
+  <section class="wrap block" aria-labelledby="how">
+    <h2 id="how">How I build</h2>
+    <ol class="principles">
+      {
+        principles.map((p, i) => (
+          <li>
+            <span class="n">0{i + 1}</span>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="wrap block prose" aria-labelledby="timeline-h">
+    <h2 id="timeline-h">Timeline</h2>
+    <ol class="timeline">
+      {
+        timeline.map((t) => (
+          <li>
+            <p class="mono-label">{t.when}</p>
+            <p class="where">{t.where}</p>
+            <p class="what">{t.what}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <h2 id="taekwondo">Off the keyboard</h2>
+    <p>{site.taekwondo}</p>
+
+    <h2 id="elsewhere">Elsewhere</h2>
+    <ul class="links">
+      <li><a href={site.github} rel="me">GitHub</a>: personal projects and experiments</li>
+      <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      {site.linkedin && <li><a href={site.linkedin} rel="me">LinkedIn</a></li>}
+    </ul>
+  </section>
+
+  <div class="wrap end">
+    <SayHi />
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding-block: 56px 20px;
+  }
+
+  h1 {
+    font-size: clamp(38px, 5vw, 52px);
+    letter-spacing: -0.028em;
+    margin-top: 14px;
+  }
+
+  .lead {
+    margin-top: 18px;
+    max-width: 62ch;
+    font-size: clamp(18px, 2vw, 21px);
+    line-height: 1.55;
+    color: #a9b6c2;
+  }
+
+  .prose a {
+    color: var(--text);
+  }
+
+  .block {
+    margin-top: 56px;
+  }
+
+  .block > h2 {
+    font-size: 26px;
+    letter-spacing: -0.015em;
+  }
+
+  .principles {
+    list-style: none;
+    padding: 0;
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 14px;
+  }
+
+  .principles li {
+    padding: 20px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-tile);
+  }
+
+  .principles .n {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .principles h3 {
+    font-size: 18px;
+    margin-top: 8px;
+  }
+
+  .principles p {
+    margin-top: 6px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--secondary);
+  }
+
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin-top: 18px;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .timeline li {
+    position: relative;
+    padding: 0 0 22px 22px;
+    margin: 0;
+  }
+
+  .timeline li::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 7px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--page);
+    border: 1px solid #3d4e5f;
+  }
+
+  .timeline li:first-child::before {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .timeline p {
+    margin: 0;
+  }
+
+  .where {
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 4px !important;
+  }
+
+  .what {
+    font-size: 15.5px;
+    color: var(--secondary);
+  }
+
+  .links {
+    padding-left: 18px;
+  }
+
+  .end {
+    margin-top: 64px;
+  }
+</style>

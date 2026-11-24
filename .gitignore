@@ -1,0 +1,24 @@
+# build output and caches
+dist/
+.astro/
+node_modules/
+
+# planning notes, mockups and unreviewed drafts never go public
+docs/
+.superpowers/
+src/content/drafts/
+
+# the GitHub profile README is its own repository
+profile/
+
+# local env and OS files
+.env
+.env.*
+.DS_Store
+
+# sensitive test terms (CI reads them from the FORBIDDEN_TERMS secret)
+tests/forbidden.local.json
+
+# local tooling
+.claude/
+.remember/

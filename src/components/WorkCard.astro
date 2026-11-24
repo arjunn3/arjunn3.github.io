@@ -1,0 +1,118 @@
+---
+// A project card. Projects with a page are links; card-only entries
+// (smaller contributions) are plain cards, so no link leads nowhere.
+import type { WorkEntry } from '../lib/work';
+
+interface Props {
+  entry: WorkEntry;
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const hasPage = d.page !== false;
+const Tag = hasPage ? 'a' : 'div';
+---
+
+<Tag class:list={['card', { lift: hasPage, link: hasPage }]} href={hasPage ? `/work/${entry.id}/` : undefined}>
+  <p class="top">
+    <span class:list={['role', d.ownership]}>{d.ownership === 'owner' ? 'built' : 'contributed'}</span>
+    {d.product && <span class="product">{d.product}</span>}
+    {d.status === 'draft' && <span class="draft">draft</span>}
+  </p>
+  <h3 class="card-title">{d.title}</h3>
+  <p class="card-text">{d.summary}</p>
+  <div class="foot">
+    <ul class="chips">
+      {d.stack.slice(0, 3).map((s) => <li>{s}</li>)}
+    </ul>
+    {hasPage && <span class="more" aria-hidden="true">read →</span>}
+  </div>
+</Tag>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 22px;
+    color: var(--text);
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+
+  .card:not(.link) {
+    background: rgba(15, 21, 28, 0.55);
+  }
+
+  .card.link:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--label);
+  }
+
+  .role {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid #2a3642;
+  }
+
+  .role.owner {
+    color: var(--accent);
+    border-color: var(--accent-soft);
+  }
+
+  .card-title {
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    margin-top: 14px;
+  }
+
+  .card-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--secondary);
+    margin-top: 8px;
+    flex: 1;
+  }
+
+  .foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .more {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--secondary);
+  }
+
+  .card.link:hover .more {
+    color: var(--accent);
+  }
+
+  .draft {
+    padding: 1px 6px;
+    border: 1px dashed var(--gold);
+    border-radius: 4px;
+    color: var(--gold);
+  }
+</style>

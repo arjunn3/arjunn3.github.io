@@ -1,0 +1,282 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Diagram from '../../components/Diagram.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+import Steps from '../../components/Steps.astro';
+import Toc from '../../components/Toc.astro';
+import { diagrams } from '../../diagrams';
+import type { WorkGroup } from '../../lib/schemas';
+import { adjacentWork, pageEntries, visibleWork, type WorkEntry } from '../../lib/work';
+
+export async function getStaticPaths() {
+  const all = pageEntries(visibleWork(await getCollection('work'), { includeDrafts: import.meta.env.DEV }));
+  return all.map((entry, index) => ({ params: { slug: entry.id }, props: { entry, index, all } }));
+}
+
+interface Props {
+  entry: WorkEntry & Awaited<ReturnType<typeof getCollection<'work'>>>[number];
+  index: number;
+  all: WorkEntry[];
+}
+
+const { entry, index, all } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry);
+const { prev, next } = adjacentWork(all, entry.id);
+const spec = diagrams[entry.id];
+
+const orgLabel: Record<WorkGroup, string> = {
+  orfiq: 'at orfiq',
+  personal: 'personal',
+  experience: 'internship',
+  academic: 'academic',
+};
+
+// Overview first (the big picture), then how it works, then the story.
+const toc = [
+  ...(spec ? [{ slug: 'overview', text: 'Overview' }] : []),
+  ...(d.steps?.length ? [{ slug: 'how-it-works', text: 'How it works' }] : []),
+  ...headings.filter((h) => h.depth === 2).map((h) => ({ slug: h.slug, text: h.text })),
+];
+
+const links = [
+  d.links?.repo && { href: d.links.repo, text: 'Source' },
+  d.links?.live && { href: d.links.live, text: 'Live' },
+].filter((l): l is { href: string; text: string } => Boolean(l));
+---
+
+<Base title={d.title} description={d.summary} path={`/work/${entry.id}/`}>
+  <article>
+    <header class="wrap pp-head">
+      <a class="back" href="/work/">← all work</a>
+      <p class="mono-label label">
+        {String(index + 1).padStart(2, '0')} · {d.year} · {orgLabel[d.group]}{d.status === 'draft' && ' · draft'}
+      </p>
+      <h1>{d.title}</h1>
+      {d.product && <p class="product">{d.product}</p>}
+      <p class="summary">{d.summary}</p>
+      {
+        d.highlights && d.highlights.length > 0 && (
+          <section class="highlights" aria-label="Highlights">
+            <p class="mono-label">highlights</p>
+            <ul>
+              {d.highlights.map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+      <dl class="meta">
+        <div>
+          <dt class="mono-label">role</dt>
+          <dd>{d.role}</dd>
+        </div>
+        {
+          d.stack.length > 0 && (
+            <div>
+              <dt class="mono-label">stack</dt>
+              <dd>{d.stack.join(' · ')}</dd>
+            </div>
+          )
+        }
+        <div>
+          <dt class="mono-label">when</dt>
+          <dd>{d.year}</dd>
+        </div>
+        {
+          d.code === 'private' ? (
+            <div>
+              <dt class="mono-label">code</dt>
+              <dd>{d.codeNote ?? 'Private.'}</dd>
+            </div>
+          ) : (
+            links.length > 0 && (
+              <div>
+                <dt class="mono-label">links</dt>
+                <dd>
+                  {links.map((l) => (
+                    <a href={l.href}>{l.text} <span aria-hidden="true">↗</span></a>
+                  ))}
+                </dd>
+              </div>
+            )
+          )
+        }
+      </dl>
+    </header>
+
+    {
+      spec && (
+        <section id="overview" class="wrap block">
+          <h2>Overview</h2>
+          <Diagram spec={spec} />
+        </section>
+      )
+    }
+
+    {
+      d.steps && d.steps.length > 0 && (
+        <section id="how-it-works" class="wrap block">
+          <h2>How it works</h2>
+          <Steps steps={d.steps} />
+        </section>
+      )
+    }
+
+    <div class="wrap body">
+      <div class="prose">
+        <Content />
+      </div>
+      {toc.length > 1 && <aside class="side"><Toc items={toc} /></aside>}
+    </div>
+
+    <div class="wrap end">
+      <ProjectNav prev={prev} next={next} />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .pp-head {
+    padding-block: 40px 8px;
+  }
+
+  .back {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--secondary);
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .label {
+    margin-top: 30px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 6vw, 60px);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin-top: 10px;
+  }
+
+  .product {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--label);
+  }
+
+  .highlights {
+    margin-top: 28px;
+    max-width: 860px;
+    padding: 20px 24px;
+    border: 1px solid var(--accent-soft);
+    border-radius: var(--r-card);
+    background: linear-gradient(180deg, rgba(94, 234, 212, 0.06), rgba(94, 234, 212, 0) 70%), var(--surface);
+  }
+
+  .highlights ul {
+    margin-top: 10px;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+
+  .highlights li::marker {
+    color: var(--accent);
+  }
+
+  .summary {
+    margin-top: 16px;
+    max-width: 780px;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.55;
+    color: #a9b6c2;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    margin-top: 36px;
+    border-block: 1px solid var(--hairline);
+  }
+
+  .meta > div {
+    padding: 16px 20px 16px 0;
+  }
+
+  .meta > div + div {
+    padding-left: 20px;
+    border-left: 1px solid var(--hairline);
+  }
+
+  .meta dd {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #c9d4de;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .block {
+    margin-top: 56px;
+    scroll-margin-top: 24px;
+  }
+
+  .block h2 {
+    font-size: 26px;
+    letter-spacing: -0.015em;
+    margin-bottom: 18px;
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 72px;
+    margin-top: 56px;
+  }
+
+  .side {
+    position: sticky;
+    top: 24px;
+    align-self: start;
+  }
+
+  .end {
+    margin-top: 72px;
+  }
+
+  @media (max-width: 1023px) {
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .side {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .meta > div,
+    .meta > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .meta > div:first-child {
+      border-top: 0;
+    }
+  }
+</style>

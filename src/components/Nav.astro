@@ -1,0 +1,96 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  path: string;
+}
+
+const { path } = Astro.props;
+const links = [
+  { href: '/work/', label: 'work' },
+  { href: '/about/', label: 'about' },
+  { href: '/now/', label: 'now' },
+];
+const current = (href: string) => (path === href ? 'page' : path.startsWith(href) ? 'true' : undefined);
+---
+
+<header class="wrap">
+  <div class="nav">
+    <a class="logo" href="/"><span class="mark" aria-hidden="true"></span>{site.logo}</a>
+    <nav aria-label="Main">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={current(l.href)}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={site.github} rel="me">github <span aria-hidden="true">↗</span></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    min-height: 76px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 24px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .mark {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(94, 234, 212, 0.6);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 26px;
+  }
+
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--secondary);
+    text-decoration: none;
+  }
+
+  nav a:hover,
+  nav a[aria-current] {
+    color: var(--text);
+  }
+
+  nav a[aria-current] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 6px;
+  }
+</style>

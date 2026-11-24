@@ -1,0 +1,260 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--page);
+  background-image:
+    radial-gradient(720px circle at 82% 12%, var(--accent-faint), transparent 62%),
+    radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size: auto, 22px 22px;
+  background-repeat: no-repeat, repeat;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* ---------- layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- links and focus ---------- */
+a {
+  color: var(--text);
+  text-decoration-color: rgba(230, 237, 243, 0.35);
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  padding: 8px 12px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  border-radius: var(--r-btn);
+  z-index: 10;
+}
+
+.skip:focus {
+  top: 12px;
+}
+
+/* ---------- shared text styles ---------- */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--secondary);
+}
+
+.kicker b {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.muted {
+  color: var(--secondary);
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 11px 16px;
+  border-radius: var(--r-btn);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn-primary:hover {
+  background: #7ff0de;
+  color: var(--on-accent);
+}
+
+.btn-ghost {
+  border-color: #263240;
+  color: #c9d4de;
+  font-weight: 400;
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent-soft);
+  color: var(--text);
+}
+
+.text-link {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #c9d4de;
+  text-decoration: none;
+  border-bottom: 1px solid #2a3642;
+  padding-bottom: 3px;
+}
+
+.text-link:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- long-form reading ---------- */
+.prose {
+  max-width: var(--measure);
+  color: var(--body);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.prose h2 {
+  color: var(--text);
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  margin-top: 40px;
+  scroll-margin-top: 24px;
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin-top: 14px;
+}
+
+.prose li + li {
+  margin-top: 6px;
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* "Key decisions" render as a grid of cards: each item is one decision and its reason. */
+.prose h2#key-decisions + ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.prose h2#key-decisions + ul > li {
+  margin: 0;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.prose h2#key-decisions + ul > li strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-head);
+  font-size: 16px;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--inset);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .lift:hover {
+    transform: none !important;
+  }
+}

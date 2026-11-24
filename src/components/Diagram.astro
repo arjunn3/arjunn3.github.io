@@ -1,0 +1,273 @@
+---
+// Renders an architecture diagram from a DiagramSpec. One visual language for
+// every diagram: dark node cards, dashed group boxes, arrowed connectors,
+// teal for the main path and for the parts Arjun built.
+import { edgeLabelPoint, edgePath, metrics, subLines, type DiagramSpec } from '../lib/diagram';
+
+interface Props {
+  spec: DiagramSpec;
+}
+
+const { spec } = Astro.props;
+const byId = new Map(spec.nodes.map((n) => [n.id, n]));
+const uid = `dg-${spec.title
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '')}`;
+const edges = spec.edges.map((e) => {
+  const a = byId.get(e.from)!;
+  const b = byId.get(e.to)!;
+  return { e, d: edgePath(a, b, e), at: e.label ? edgeLabelPoint(a, b, e) : undefined };
+});
+---
+
+<figure class="diagram">
+  <div class="frame" role="region" aria-label={`${spec.title} (diagram)`} tabindex="0">
+    <svg
+      viewBox={`0 0 ${spec.width} ${spec.height}`}
+      width={spec.width}
+      height={spec.height}
+      role="img"
+      aria-labelledby={`${uid}-t`}
+      style={`min-width:${Math.round(spec.width * 0.86)}px`}
+    >
+      <title id={`${uid}-t`}>{spec.title}</title>
+      <defs>
+        <marker
+          id={`${uid}-arrow`}
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path class="arrow" d="M0 1 L9 5 L0 9 z"></path>
+        </marker>
+        <marker
+          id={`${uid}-arrow-main`}
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="5"
+          markerWidth="7"
+          markerHeight="7"
+          orient="auto-start-reverse"
+        >
+          <path class="arrow main" d="M0 1 L9 5 L0 9 z"></path>
+        </marker>
+      </defs>
+
+      {
+        (spec.groups ?? []).map((g) => (
+          <g class="group">
+            <rect x={g.x} y={g.y} width={g.w} height={g.h} rx="14" />
+            <text x={g.x + metrics.pad} y={g.y + 18}>
+              {g.title.toUpperCase()}
+            </text>
+          </g>
+        ))
+      }
+
+      {
+        edges.map(({ e, d }) => (
+          <path
+            class:list={['edge', { main: e.main, dashed: e.dashed }]}
+            d={d}
+            marker-end={`url(#${uid}-${e.main ? 'arrow-main' : 'arrow'})`}
+          />
+        ))
+      }
+
+      {
+        spec.nodes.map((n) => {
+          const lines = subLines(n);
+          return (
+            <g class:list={['node', n.kind]}>
+              <rect x={n.x} y={n.y} width={n.w} height={n.h} rx="10" />
+              {n.kind === 'store' && <line class="store-line" x1={n.x + 10} x2={n.x + n.w - 10} y1={n.y + 6} y2={n.y + 6} />}
+              {n.kind === 'mine' && <circle class="mine-dot" cx={n.x + n.w - 12} cy={n.y + 12} r="3" />}
+              <text class="title" x={n.x + metrics.pad} y={lines.length ? n.y + metrics.titleY : n.y + n.h / 2 + 5}>
+                {n.title}
+              </text>
+              {lines.map((line, i) => (
+                <text class="sub" x={n.x + metrics.pad} y={n.y + metrics.subY + i * metrics.subLine}>
+                  {line}
+                </text>
+              ))}
+            </g>
+          );
+        })
+      }
+
+      {
+        edges
+          .filter(({ at }) => at)
+          .map(({ e, at }) => {
+            const w = e.label!.length * metrics.labelChar + 14;
+            return (
+              <g class="label">
+                <rect x={at!.x - w / 2} y={at!.y - 9} width={w} height="18" rx="9" />
+                <text x={at!.x} y={at!.y + 3.5}>
+                  {e.label}
+                </text>
+              </g>
+            );
+          })
+      }
+    </svg>
+  </div>
+  <p class="hint" aria-hidden="true">scroll sideways to see the whole diagram →</p>
+  <figcaption>{spec.caption}</figcaption>
+</figure>
+
+<style>
+  .diagram {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .frame {
+    /* never let the diagram's min-width widen its parent: it scrolls inside this frame instead */
+    contain: inline-size;
+    overflow-x: auto;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    background:
+      radial-gradient(var(--dot) 1px, transparent 1px) 0 0 / 22px 22px,
+      rgba(11, 16, 22, 0.7);
+    padding: 18px;
+    scrollbar-color: #2a3642 transparent;
+  }
+
+  .frame:focus-visible {
+    outline-offset: 2px;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .group rect {
+    fill: rgba(15, 21, 28, 0.4);
+    stroke: #2a3642;
+    stroke-dasharray: 4 5;
+  }
+
+  .group text {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    fill: #7d8a97;
+  }
+
+  .edge {
+    fill: none;
+    stroke: #33475a;
+    stroke-width: 1.3;
+  }
+
+  .edge.main {
+    stroke: var(--accent);
+    stroke-width: 1.7;
+  }
+
+  .edge.dashed {
+    stroke-dasharray: 5 5;
+  }
+
+  .arrow {
+    fill: #33475a;
+  }
+
+  .arrow.main {
+    fill: var(--accent);
+  }
+
+  .node rect {
+    fill: var(--surface);
+    stroke: var(--border);
+    stroke-width: 1.2;
+    transition: stroke 0.2s;
+  }
+
+  .node:hover rect {
+    stroke: #3a5560;
+  }
+
+  .node.mine rect {
+    stroke: rgba(94, 234, 212, 0.5);
+  }
+
+  .node.mine:hover rect {
+    stroke: var(--accent);
+  }
+
+  .node.external rect {
+    fill: var(--inset);
+    stroke: #3a4a5a;
+    stroke-dasharray: 4 4;
+  }
+
+  .node.store rect {
+    fill: #0d141b;
+  }
+
+  .store-line {
+    stroke: #2a3642;
+  }
+
+  .mine-dot {
+    fill: var(--accent);
+  }
+
+  .title {
+    font-family: var(--font-head);
+    font-size: 13.5px;
+    font-weight: 600;
+    fill: var(--text);
+  }
+
+  .sub {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--secondary);
+  }
+
+  .label rect {
+    fill: var(--page);
+    stroke: #223040;
+  }
+
+  .label text {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: #9fb0bf;
+    text-anchor: middle;
+  }
+
+  .hint {
+    display: none;
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--label);
+  }
+
+  /* below the svg's min-width (86% of a 1000-wide spec, plus padding) the diagram scrolls */
+  @media (max-width: 960px) {
+    .hint {
+      display: block;
+    }
+  }
+
+  figcaption {
+    margin-top: 12px;
+    max-width: 90ch;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--label);
+  }
+</style>

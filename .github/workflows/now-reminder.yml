@@ -1,0 +1,41 @@
+name: Now reminder
+
+# Weekly: if src/content/now.md is more than 45 days old, open one issue
+# (GitHub emails it). 45 days fires before GitHub pauses scheduled jobs in a
+# quiet public repository, which happens after 60 days.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - id: age
+        run: |
+          set +e
+          node scripts/check-now.mjs > age.txt
+          code=$?
+          cat age.txt
+          if [ "$code" -eq 3 ]; then echo "stale=true" >> "$GITHUB_OUTPUT"; else echo "stale=false" >> "$GITHUB_OUTPUT"; fi
+          if [ "$code" -ne 0 ] && [ "$code" -ne 3 ]; then exit 1; fi
+      - if: steps.age.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Time to update /now"
+          open=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq 'length')
+          if [ "$open" = "0" ]; then
+            gh issue create --title "$title" --body "$(cat age.txt)
+
+          Edit src/content/now.md: update the list and the \`updated:\` date. The homepage and /now/ follow automatically."
+          fi

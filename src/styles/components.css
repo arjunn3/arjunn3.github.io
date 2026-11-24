@@ -1,0 +1,293 @@
+/* ---------- tiles ---------- */
+.tile {
+  position: relative;
+  display: block;
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-tile);
+  padding: 22px;
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+a.tile:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+}
+
+.lift:hover {
+  transform: translateY(-2px);
+}
+
+.tile-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--label);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tile-title {
+  font-family: var(--font-head);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-top: 11px;
+}
+
+.tile-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--secondary);
+  margin-top: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* the one continuous animation on the site: the "now" dot */
+.live {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  animation: live-pulse 2.4s ease-out infinite;
+}
+
+@keyframes live-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* ---------- chips ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #9fb0bf;
+  border: 1px solid #223040;
+  border-radius: 999px;
+  padding: 4px 9px;
+}
+
+/* ---------- tile visuals ---------- */
+.v-flow {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.v-flow li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #c9d4de;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: var(--inset);
+}
+
+.v-flow i {
+  font-style: normal;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #2a3642;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--secondary);
+  flex-shrink: 0;
+}
+
+.v-flow li.on {
+  border-color: var(--accent-soft);
+}
+
+.v-flow li.on i {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.v-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.v-chain span {
+  border: 1px solid #2a3642;
+  border-radius: 6px;
+  padding: 3px 7px;
+  color: #c9d4de;
+}
+
+.v-chain span.final {
+  border-style: dashed;
+}
+
+.v-chain i {
+  font-style: normal;
+  color: var(--deco);
+}
+
+.v-fallback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 26px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.v-fallback span {
+  border: 1px solid #2a3642;
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: #c9d4de;
+}
+
+.v-fallback em {
+  flex: 1;
+  height: 0;
+  border-top: 1px dashed #3a4a5a;
+  position: relative;
+}
+
+.v-fallback em::after {
+  content: 'fallback';
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-style: normal;
+  font-size: 9.5px;
+  color: var(--label);
+}
+
+.v-diff {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  margin-top: 12px;
+  background: var(--inset);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 7px 12px;
+}
+
+.v-diff .m {
+  color: var(--diff-red);
+}
+
+.v-diff .p {
+  color: var(--diff-green);
+}
+
+.v-diff .dim {
+  color: var(--label);
+}
+
+.v-phone {
+  position: absolute;
+  right: 16px;
+  bottom: -48px;
+  width: 72px;
+  height: 140px;
+  border: 2px solid #3a4a5a;
+  border-radius: 16px;
+  background: #121a22;
+  padding: 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transform: rotate(8deg);
+}
+
+.v-phone i {
+  display: block;
+  height: 12px;
+  border-radius: 4px;
+}
+
+/* a plain belt: no rank stripes, so it claims nothing */
+.v-belt {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  height: 14px;
+  background: #05080b;
+  border-block: 1px solid #2a3642;
+}
+
+/* ---------- say hi ---------- */
+.say-hi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  padding: 26px 28px;
+}
+
+.say-hi-title {
+  font-size: 22px;
+}
+
+.say-hi-text {
+  font-size: 14px;
+  color: var(--secondary);
+  margin-top: 4px;
+}
+
+.say-hi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}

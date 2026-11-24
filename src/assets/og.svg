@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#8ca0b4" fill-opacity="0.16"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.78" cy="0.3" r="0.55">
+      <stop offset="0" stop-color="#5eead4" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#5eead4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0a0e13"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- graph motif -->
+  <g fill="none" stroke="#243241" stroke-width="2">
+    <path d="M700 330 C750 330 770 230 820 230"/>
+    <path d="M700 330 C750 330 770 430 820 430"/>
+    <path d="M820 330 C870 330 890 400 940 400"/>
+    <path d="M940 250 C990 250 1010 300 1060 300"/>
+    <path d="M940 400 C990 400 1010 450 1060 450"/>
+  </g>
+  <g fill="none" stroke="#5eead4" stroke-width="3">
+    <path d="M700 330 L820 330"/>
+    <path d="M820 330 C870 330 890 250 940 250"/>
+    <path d="M940 250 C990 250 1010 190 1060 190"/>
+  </g>
+  <g fill="#0a0e13" stroke="#3d4e5f" stroke-width="2">
+    <circle cx="820" cy="230" r="7"/><circle cx="820" cy="430" r="7"/>
+    <circle cx="940" cy="400" r="7"/><circle cx="1060" cy="300" r="7"/><circle cx="1060" cy="450" r="7"/>
+  </g>
+  <g fill="#5eead4">
+    <circle cx="700" cy="330" r="16" fill-opacity="0.15"/><circle cx="700" cy="330" r="8"/>
+    <circle cx="820" cy="330" r="16" fill-opacity="0.15"/><circle cx="820" cy="330" r="8"/>
+    <circle cx="940" cy="250" r="16" fill-opacity="0.15"/><circle cx="940" cy="250" r="8"/>
+    <circle cx="1060" cy="190" r="16" fill-opacity="0.15"/><circle cx="1060" cy="190" r="8"/>
+  </g>
+
+  <!-- text -->
+  <rect x="80" y="96" width="16" height="16" rx="3" fill="#5eead4"/>
+  <text x="112" y="110" font-family="Menlo, 'DejaVu Sans Mono', monospace" font-size="22" fill="#8b98a5">arjunn3.github.io</text>
+  <text x="80" y="300" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="76" font-weight="700" fill="#e6edf3" letter-spacing="-2">Arjun Nagendra</text>
+  <text x="80" y="366" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="34" font-weight="500" fill="#5eead4">I build AI systems that stay grounded.</text>
+  <text x="80" y="520" font-family="Menlo, 'DejaVu Sans Mono', monospace" font-size="22" fill="#8b98a5">// ai engineer · orfiq · knowledge graphs · agent pipelines</text>
+</svg>

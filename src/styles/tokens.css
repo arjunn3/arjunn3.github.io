@@ -1,0 +1,38 @@
+/* Design tokens. Values come from the approved design (spec §6). */
+:root {
+  color-scheme: dark;
+
+  /* colour */
+  --page: #0a0e13;
+  --surface: #0f151c;
+  --inset: #0b1016;
+  --border: #1c2630;
+  --hairline: #18212b;
+  --border-hover: #2c4650;
+  --text: #e6edf3;
+  --body: #c3ced8;
+  --secondary: #8b98a5;
+  --label: #7d8a97; /* small labels: ~5.5:1 on --page */
+  --deco: #5b6874; /* decoration only, never text */
+  --accent: #5eead4;
+  --accent-soft: rgba(94, 234, 212, 0.35);
+  --accent-faint: rgba(94, 234, 212, 0.08);
+  --on-accent: #05201c;
+  --diff-red: #f28b82;
+  --diff-green: #81c995;
+  --gold: #e8b931;
+  --dot: rgba(140, 160, 180, 0.12);
+
+  /* type */
+  --font-head: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* shape and layout */
+  --r-tile: 16px;
+  --r-card: 14px;
+  --r-btn: 8px;
+  --max: 1200px;
+  --gutter: clamp(16px, 4.5vw, 56px);
+  --measure: 70ch;
+}

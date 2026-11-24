@@ -1,0 +1,67 @@
+---
+// "On this page": wayfinding for long write-ups. Works without JavaScript;
+// a tiny script marks the section you're reading.
+interface Props {
+  items: { slug: string; text: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="toc" aria-label="On this page">
+  <p class="mono-label">on this page</p>
+  <ol>
+    {
+      items.map((i) => (
+        <li>
+          <a href={`#${i.slug}`}>{i.text}</a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<script>
+  import { watchToc } from '../scripts/toc';
+  watchToc();
+</script>
+
+<style>
+  .toc {
+    border-left: 1px solid var(--hairline);
+    padding-left: 18px;
+  }
+
+  ol {
+    list-style: none;
+    padding: 0;
+    margin-top: 6px;
+  }
+
+  li {
+    margin-top: 10px;
+  }
+
+  a {
+    position: relative;
+    display: block;
+    font-size: 14px;
+    color: var(--secondary);
+    text-decoration: none;
+  }
+
+  a:hover,
+  a[aria-current='true'] {
+    color: var(--text);
+  }
+
+  a[aria-current='true']::before {
+    content: '';
+    position: absolute;
+    left: -19px;
+    top: 2px;
+    bottom: 2px;
+    width: 2px;
+    background: var(--accent);
+  }
+</style>

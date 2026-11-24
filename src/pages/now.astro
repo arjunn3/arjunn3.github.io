@@ -1,0 +1,73 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const [now] = await getCollection('now');
+if (!now) throw new Error('src/content/now.md is missing');
+const { Content } = await render(now);
+const updated = now.data.updated;
+const iso = updated.toISOString().slice(0, 10);
+const human = updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base title="Now" description={`What Arjun Nagendra is working on right now: ${now.data.summary}`} path="/now/">
+  <header class="wrap head">
+    <p class="kicker"><b>//</b> now</p>
+    <h1>Now</h1>
+    <p class="updated">
+      <span class="live" aria-hidden="true"></span>
+      Updated <time datetime={iso}>{human}</time>
+    </p>
+  </header>
+  <div class="wrap">
+    <div class="prose now">
+      <Content />
+    </div>
+    <p class="about-now">
+      A "now" page says what I'd tell a friend I hadn't seen in a while: what I'm focused on at the moment. Everything
+      older is on the <a href="/work/">work</a> page.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding-block: 56px 28px;
+  }
+
+  h1 {
+    font-size: clamp(38px, 5vw, 52px);
+    letter-spacing: -0.028em;
+    margin-top: 14px;
+  }
+
+  .updated {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--secondary);
+  }
+
+  .now :global(ul) {
+    padding-left: 20px;
+  }
+
+  .now :global(li + li) {
+    margin-top: 14px;
+  }
+
+  .now :global(li::marker) {
+    color: var(--accent);
+  }
+
+  .about-now {
+    margin-top: 48px;
+    max-width: 62ch;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--label);
+  }
+</style>

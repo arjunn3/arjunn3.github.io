@@ -1,0 +1,28 @@
+---
+// Closing invitation (peak-end rule): every visit ends somewhere useful.
+import { site } from '../data/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={['tile', 'say-hi', className]} aria-labelledby="say-hi-title">
+  <div>
+    <h2 id="say-hi-title" class="say-hi-title">Say hi</h2>
+    <p class="say-hi-text">Working on LLMs, knowledge graphs or medical education? I'd like to hear about it.</p>
+  </div>
+  <div class="say-hi-actions">
+    <a class="btn btn-primary" href={`mailto:${site.email}`}>Email me</a>
+    <a class="btn btn-ghost" href={site.github} rel="me">GitHub <span aria-hidden="true">↗</span></a>
+    {
+      site.linkedin && (
+        <a class="btn btn-ghost" href={site.linkedin} rel="me">
+          LinkedIn <span aria-hidden="true">↗</span>
+        </a>
+      )
+    }
+  </div>
+</section>

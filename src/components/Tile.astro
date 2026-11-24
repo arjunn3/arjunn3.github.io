@@ -1,0 +1,22 @@
+---
+// A bento tile. With an href the whole tile is the link (Fitts's law: a big,
+// easy target), so nothing inside it may be another link.
+interface Props {
+  href?: string;
+  class?: string;
+}
+
+const { href, class: className } = Astro.props;
+---
+
+{
+  href ? (
+    <a class:list={['tile', 'lift', className]} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <div class:list={['tile', className]}>
+      <slot />
+    </div>
+  )
+}

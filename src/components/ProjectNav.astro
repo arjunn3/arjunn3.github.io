@@ -1,0 +1,88 @@
+---
+// Previous / next project: a project page never ends in a dead end.
+import type { WorkEntry } from '../lib/work';
+
+interface Props {
+  prev?: WorkEntry;
+  next?: WorkEntry;
+}
+
+const { prev, next } = Astro.props;
+---
+
+<nav class="pnav" aria-label="More projects">
+  {
+    prev ? (
+      <a class="lift" href={`/work/${prev.id}/`}>
+        <span class="mono-label">← previous</span>
+        <span class="t">{prev.data.title}</span>
+      </a>
+    ) : (
+      <a class="lift" href="/work/">
+        <span class="mono-label">← all work</span>
+        <span class="t">Every project</span>
+      </a>
+    )
+  }
+  {
+    next ? (
+      <a class="lift right" href={`/work/${next.id}/`}>
+        <span class="mono-label">next →</span>
+        <span class="t">{next.data.title}</span>
+      </a>
+    ) : (
+      <a class="lift right" href="/about/">
+        <span class="mono-label">about →</span>
+        <span class="t">Who builds these</span>
+      </a>
+    )
+  }
+</nav>
+
+<style>
+  .pnav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    text-decoration: none;
+    color: var(--text);
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+
+  a:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .t {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .pnav {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .right {
+      text-align: left;
+    }
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+// The hero figure: the path taken at each step of building with LLMs.
+// The teal route is the grounded choice; the faded branches are the
+// shortcuts that make AI systems unreliable. Plain words, no domain jargon.
+const path: [number, number, string][] = [
+  [34, 170, 'request'],
+  [132, 170, 'guardrails'],
+  [236, 110, 'graph query'],
+  [342, 70, 'code audit'],
+  [440, 50, 'grounded'],
+];
+const faded: [number, number, string][] = [
+  [132, 90, 'open prompt'],
+  [132, 250, 'no limits'],
+  [236, 180, 'model query'],
+  [236, 250, 'no lookup'],
+  [342, 140, 'trust output'],
+  [342, 205, 'retry blindly'],
+  [342, 275, 'skip checks'],
+  [440, 95, 'silent fail'],
+  [440, 150, 'invented'],
+  [440, 205, 'drift'],
+  [440, 265, 'timeout'],
+];
+---
+
+<figure class="hero-fig">
+  <svg viewBox="0 0 476 305" role="img" aria-labelledby="hg-title">
+    <title id="hg-title">
+      The path I take when building with LLMs: from a request, to explicit guardrails, to a graph query, to a code
+      audit, to grounded output, instead of open prompts, model-written queries and unchecked output.
+    </title>
+    <g class="guides">
+      {[34, 132, 236, 342, 440].map((x) => <line x1={x} y1="26" x2={x} y2="300" />)}
+    </g>
+    <g class="cols">
+      <text x="34" y="14">REQUEST</text>
+      <text x="132" y="14">SCOPE</text>
+      <text x="236" y="14">RETRIEVE</text>
+      <text x="342" y="14">CHECK</text>
+      <text x="440" y="14">SHIP</text>
+    </g>
+    <g class="edges">
+      <path d="M34 170 C74 170 92 90 132 90"></path>
+      <path d="M34 170 C74 170 92 250 132 250"></path>
+      <path d="M132 170 C176 170 192 180 236 180"></path>
+      <path d="M132 170 C176 170 192 250 236 250"></path>
+      <path d="M236 110 C282 110 296 140 342 140"></path>
+      <path d="M236 180 C282 180 296 205 342 205"></path>
+      <path d="M236 250 C282 250 296 275 342 275"></path>
+      <path d="M342 70 C384 70 398 95 440 95"></path>
+      <path d="M342 140 C384 140 398 150 440 150"></path>
+      <path d="M342 205 L440 205"></path>
+      <path d="M342 275 C384 275 398 265 440 265"></path>
+    </g>
+    <g class="path">
+      <path d="M34 170 L132 170"></path>
+      <path d="M132 170 C176 170 192 110 236 110"></path>
+      <path d="M236 110 C282 110 296 70 342 70"></path>
+      <path d="M342 70 C384 70 398 50 440 50"></path>
+    </g>
+    <g class="nodes">
+      {faded.map(([cx, cy]) => <circle cx={cx} cy={cy} r="4.5" />)}
+    </g>
+    <g>
+      {
+        path.map(([cx, cy]) => (
+          <>
+            <circle class="halo" cx={cx} cy={cy} r="11" />
+            <circle class="core" cx={cx} cy={cy} r="5" />
+          </>
+        ))
+      }
+    </g>
+    <g class="labels">
+      {
+        path.map(([x, y, t]) => (
+          <text class="on" x={x} y={y + (y > 160 ? 22 : -14) + (y < 60 ? 36 : 0)}>
+            {t}
+          </text>
+        ))
+      }
+      {faded.map(([x, y, t]) => <text x={x} y={y + 18}>{t}</text>)}
+    </g>
+  </svg>
+  <figcaption>
+    fig. 1 — the path I take at each step: explicit scope, fixed retrieval, code-checked output. The faded branches are
+    the shortcuts that make AI systems unreliable.
+  </figcaption>
+</figure>
+
+<style>
+  .hero-fig {
+    margin: 0;
+    padding: 22px;
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    background: rgba(15, 21, 28, 0.8);
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .guides line {
+    stroke: #17212b;
+    stroke-dasharray: 2 5;
+  }
+
+  .cols text {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    fill: var(--label);
+    text-anchor: middle;
+  }
+
+  .edges path {
+    fill: none;
+    stroke: #243241;
+    stroke-width: 1.2;
+  }
+
+  .path path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+  }
+
+  .nodes circle {
+    fill: var(--page);
+    stroke: #3d4e5f;
+    stroke-width: 1.3;
+  }
+
+  .halo {
+    fill: rgba(94, 234, 212, 0.13);
+  }
+
+  .core {
+    fill: var(--accent);
+  }
+
+  .labels text {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--label);
+    text-anchor: middle;
+  }
+
+  .labels text.on {
+    fill: var(--text);
+  }
+
+  figcaption {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--label);
+  }
+</style>

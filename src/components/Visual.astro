@@ -1,0 +1,108 @@
+---
+// Small illustrations for homepage tiles, one per project `visual` key.
+// Decorative: each tile's title and text already say what it is.
+import type { VisualKey } from '../lib/schemas';
+
+interface Props {
+  kind: VisualKey;
+  steps?: { title: string; text: string }[];
+}
+
+const { kind, steps = [] } = Astro.props;
+---
+
+{
+  kind === 'graph-steps' && (
+    <ol class="v-flow" aria-hidden="true">
+      {steps.map((s, i) => (
+        <li class={i === 1 ? 'on' : undefined}>
+          <i>{i + 1}</i>
+          {s.title.toLowerCase()}
+        </li>
+      ))}
+    </ol>
+  )
+}
+{
+  kind === 'pipeline' && (
+    <div class="v-chain" aria-hidden="true">
+      {steps.map((s, i) => (
+        <>
+          {i > 0 && <i>›</i>}
+          <span>{s.title.toLowerCase()}</span>
+        </>
+      ))}
+    </div>
+  )
+}
+{
+  kind === 'parser' && (
+    <div class="v-chain" aria-hidden="true">
+      <span>pdf</span>
+      <span>docx</span>
+      <span>xlsx</span>
+      <i>›</i>
+      <span>json</span>
+    </div>
+  )
+}
+{
+  kind === 'job' && (
+    <div class="v-chain" aria-hidden="true">
+      <span>start</span>
+      <i>›</i>
+      <span>background job</span>
+      <i>›</i>
+      <span>ready</span>
+    </div>
+  )
+}
+{
+  kind === 'fallback' && (
+    <div class="v-fallback" aria-hidden="true">
+      <span>openai</span>
+      <em />
+      <span>gemini</span>
+    </div>
+  )
+}
+{
+  kind === 'diff' && (
+    <div class="v-diff" aria-hidden="true">
+      <div class="m">- table › row › heading</div>
+      <div class="p">+ table › row</div>
+      <div class="p">+ heading</div>
+    </div>
+  )
+}
+{
+  kind === 'states' && (
+    <div class="v-chain" aria-hidden="true">
+      <span>queued</span>
+      <i>›</i>
+      <span>running</span>
+      <i>›</i>
+      <span class="final">done · final</span>
+    </div>
+  )
+}
+{
+  kind === 'retries' && (
+    <div class="v-diff" aria-hidden="true">
+      <div class="m">turn 1 ✗ title: too long</div>
+      <div class="p">turn 2 ✓ valid</div>
+      <div class="dim">→ logfire event</div>
+    </div>
+  )
+}
+{
+  kind === 'phone' && (
+    <div class="v-phone" aria-hidden="true">
+      <i style="background:#f2a97a;width:70%" />
+      <i style="background:#5eead4;opacity:.7" />
+      <i style="background:#a5b4fc;opacity:.8" />
+      <i style="background:#e8b931;width:80%;opacity:.8" />
+      <i style="background:#26313c" />
+    </div>
+  )
+}

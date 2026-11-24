@@ -1,0 +1,138 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Diagram from '../../components/Diagram.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { diagrams } from '../../diagrams';
+import { groupByArea, groupWork, visibleWork } from '../../lib/work';
+
+const all = visibleWork(await getCollection('work'), { includeDrafts: import.meta.env.DEV });
+const areas = groupByArea(all.filter((e) => e.data.group === 'orfiq'));
+const others = groupWork(all.filter((e) => e.data.group !== 'orfiq'));
+const built = all.filter((e) => e.data.group === 'orfiq' && e.data.ownership === 'owner').length;
+---
+
+<Base
+  title="Work"
+  description="Production AI systems Arjun Nagendra has designed and built: grounded LLM pipelines, reliable long-running jobs, document parsing and repair, and multimodal integrations."
+  path="/work/"
+>
+  <header class="wrap head">
+    <p class="kicker"><b>//</b> work</p>
+    <h1>Work</h1>
+    <p class="intro">
+      Production AI systems, grouped by the kind of problem they solve. {built} of them I designed and built; the rest
+      are systems I contributed to. The code is private, so each project page explains the problem, the decisions and
+      the architecture instead.
+    </p>
+    <nav class="jump" aria-label="Areas">
+      {areas.map((a) => <a href={`#${a.area}`}>{a.label}</a>)}
+    </nav>
+  </header>
+
+  <section class="wrap map" aria-label="Overview">
+    <Diagram spec={diagrams['work-map']} />
+  </section>
+
+  {
+    areas.map((a) => (
+      <section class="wrap area" id={a.area} aria-labelledby={`h-${a.area}`}>
+        <div class="area-head">
+          <h2 id={`h-${a.area}`}>{a.label}</h2>
+          <p>{a.blurb}</p>
+        </div>
+        <div class="cards">
+          {a.items.map((e) => (
+            <WorkCard entry={e} />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    others.map((g) => (
+      <section class="wrap area" aria-labelledby={`group-${g.group}`}>
+        <div class="area-head">
+          <h2 id={`group-${g.group}`}>{g.label}</h2>
+        </div>
+        <div class="cards">
+          {g.items.map((e) => (
+            <WorkCard entry={e} />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .head {
+    padding-block: 56px 32px;
+  }
+
+  h1 {
+    font-size: clamp(38px, 5vw, 52px);
+    letter-spacing: -0.028em;
+    margin-top: 14px;
+  }
+
+  .intro {
+    margin-top: 16px;
+    max-width: 66ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--secondary);
+  }
+
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .jump a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #c9d4de;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #263240;
+    border-radius: 999px;
+  }
+
+  .jump a:hover {
+    border-color: var(--accent-soft);
+    color: var(--text);
+  }
+
+  .area {
+    margin-top: 72px;
+    scroll-margin-top: 24px;
+  }
+
+  .area-head {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .area-head h2 {
+    font-size: 26px;
+  }
+
+  .area-head p {
+    margin-top: 8px;
+    max-width: 70ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--secondary);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+</style>
