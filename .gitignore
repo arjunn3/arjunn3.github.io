@@ -1,5 +1,5 @@
 # build output and caches
-dist/
+/dist/
 .astro/
 node_modules/
 
